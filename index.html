@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,7 +8,31 @@
     <script src="js.js" defer></script>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-    
+    <div class="wrapper">
+        <div class="players">
+            <div class="player" id="player1"></div>
+            <div class="player" id="player2"></div>
+        </div>
+        <div id="player-bar"></div>
+        <div class="gameBoard">
+            <div class="cell" id="index-0">1</div>
+            <div class="cell" id="index-1">2</div>
+            <div class="cell" id="index-2">3</div>
+            <div class="cell" id="index-3">4</div>
+            <div class="cell" id="index-4">5</div>
+            <div class="cell" id="index-5">6</div>
+            <div class="cell" id="index-6">7</div>
+            <div class="cell" id="index-7">8</div>
+            <div class="cell" id="index-8">9</div>
+        </div>
+        <div class="reset-board"><button id="reset-button">Reset</button></div>
+    </div>
+    <dialog id="end-game-modal">
+        <div id="end-game-message"></div>
+        <div id="restart-game-block"><button id="restart-game">Restart</button></div>
+    </dialog>
 </body>
+
 </html>

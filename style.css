@@ -1,0 +1,15 @@
+.gameBoard {
+    display: grid;
+    grid-template: 50px 50px 50px / 50px 50px 50px;
+    gap: 0.8px;
+}
+.cell {
+    margin: 0;
+    padding: 0;
+    background-color: green;
+    border: 5px solid black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}

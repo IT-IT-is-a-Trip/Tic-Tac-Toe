@@ -1,3 +1,4 @@
+//модуль игрового поля:
 const GameBoard = (function () {
     let gameBoard = [
         '', '', '',
@@ -5,13 +6,17 @@ const GameBoard = (function () {
         '', '', ''];
     const getBoard = () => gameBoard;
     const markCell = (index, mark) => { gameBoard[index] = !gameBoard[index] ? mark : gameBoard[index] };
-    const resetBoard = () => gameBoard = ['', '', '', '', '', '', '', '', ''];
+    const resetBoard = () => gameBoard = [
+        '', '', '',
+        '', '', '',
+        '', '', ''];
     return {
         getBoard,
         markCell,
         resetBoard
     }
 })();
+//контроллер игры:
 const gameController = function (
     playerOneName = 'Player one (X)',
     playerTwoName = 'Player two (O)') {
@@ -21,11 +26,13 @@ const gameController = function (
         {
             name: playerOneName,
             symbol: "X",
+            winRound: false,
             wins: 0
         },
         {
             name: playerTwoName,
             symbol: 'O',
+            winRound: false,
             wins: 0
         }
     ];
@@ -38,7 +45,7 @@ const gameController = function (
         activePlayer = activePlayer === players[0] ? players[1] : players[0];
     }
     const printRoundDetails = () => {
-        //создаёт "интерфейс" в консоли
+        //создаёт "интерфейс" в консоли:
         console.log(`
             ${board[0]} | ${board[1]} | ${board[2]}
            ---------
@@ -52,15 +59,15 @@ const gameController = function (
     }
 
     const playRound = (index) => {
+        if (index === '') { return };
         if (gameEnded) {
-            console.log(`${activePlayer.name} won`);
             return;
         }
         let playerMark = activePlayer.symbol; // метка активного игрока
         //заполнение ячейки меткой активного игрока:
         if (board[index]) {
             return;
-        } else {GameBoard.markCell(index, playerMark)};
+        } else { GameBoard.markCell(index, playerMark) };
         //проверка победителя или ничьи по паттернам.
 
         const checkWinner = () => {
@@ -74,6 +81,7 @@ const gameController = function (
                 if (board[a] && board[a] == board[b] && board[a] === board[c]) {
                     gameEnded = true;
                     console.log(`${activePlayer.name} won`);
+                    activePlayer.winRound = true;
                     activePlayer.wins++;
                     return;
                 }
@@ -82,18 +90,22 @@ const gameController = function (
                 if (!i) return switchPlayer();
             }
             gameEnded = true;
+            activePlayer.winRound = 'Tie';
             printRoundDetails();
-            return console.log(`I's tie`);
+            return console.log(`It's tie`);
         };
         checkWinner();
         printRoundDetails();
     }
     printRoundDetails();
+    //метод сброса игры:
     const resetGame = () => {
+        //очистка игрового поля:
         GameBoard.resetBoard();
         gameEnded = false;
         board = GameBoard.getBoard();
         activePlayer = players[0];
+        activePlayer.winRound = false;
         printRoundDetails();
     }
     return {
@@ -103,3 +115,65 @@ const gameController = function (
     }
 }
 const game = gameController();
+
+
+
+//UI
+const screenController = (function () {
+    const cells = document.querySelectorAll('.cell');
+    const resetButton = document.getElementById('reset-button')
+    //обновляет UI игрового поля:
+    const updateGameboard = () => {
+        const board = GameBoard.getBoard();
+        for (let i = 0; i < board.length; i++) {
+            cells[i].textContent = board[i];
+            getCurrentPlayer(); 
+            showWinner();
+        }
+    }
+    const makeMove = () => {
+        cells.forEach((cell, index) => {
+            cells[index].addEventListener('click', () => {
+                game.playRound(index);
+                updateGameboard();
+                showWinner();
+            })
+        })
+    };
+    const resetBoard = () => {
+        game.resetGame();
+        updateGameboard();
+    }
+
+    
+    //вывод текущего игрока:
+    const getCurrentPlayer = () => {
+        let currentPlayerName = game.getActivePlayer().name
+        const playerBar = document.getElementById('player-bar');
+        playerBar.textContent = `${currentPlayerName} round`;
+        return game.getActivePlayer().name;
+    }
+
+    //вывод сообщения о победе/ничье:
+    const showWinner = () => {
+        const activePlayer = game.getActivePlayer().name;
+        const playerWinStatus = game.getActivePlayer().winRound;
+        const modal = document.getElementById('end-game-modal');
+        const endGameMessage = document.getElementById('end-game-message');
+        const restartGameButton = document.getElementById('restart-game');
+        restartGameButton.addEventListener('click', () => {
+            resetBoard();
+            modal.close();
+        });
+        if (playerWinStatus) {
+            if (playerWinStatus === 'Tie') {
+            endGameMessage.textContent = 'It`s tie';
+        } else {endGameMessage.textContent = `${activePlayer} wins!`}
+        modal.showModal();
+    }
+    }
+
+    resetButton.addEventListener('click', resetBoard)
+    updateGameboard();
+    makeMove();
+})();
