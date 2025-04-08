@@ -20,6 +20,12 @@ const GameBoard = (function () {
 const gameController = function (
     playerOneName = 'Player one (X)',
     playerTwoName = 'Player two (O)') {
+    //DOM вывод имён игроков в поля со счётчиком побед:
+    const player1field = document.getElementById("player-1-name");
+    const player2field = document.getElementById('player-2-name');
+    player1field.textContent = `${playerOneName} wins: `;
+    player2field.textContent = `${playerTwoName} wins: `; 
+
     let board = GameBoard.getBoard();
     let gameEnded = false
     const players = [
@@ -134,6 +140,7 @@ const gameController = function (
         resetGame
     }
 }
+
 const game = gameController();
 
 
@@ -170,7 +177,7 @@ const screenController = (function () {
     const getCurrentPlayer = () => {
         let currentPlayerName = game.getActivePlayer().name
         const playerBar = document.getElementById('player-bar');
-        playerBar.textContent = `${currentPlayerName} round`;
+        playerBar.textContent = `${currentPlayerName}'s round`;
         return game.getActivePlayer().name;
     }
 
@@ -202,6 +209,7 @@ const screenController = (function () {
         player1.textContent = game.getPlayersWins(1);
         player2.textContent = game.getPlayersWins(2);
     }
+    showWinnersSideBar();
     resetButton.addEventListener('click', resetBoard)
     updateGameboard();
     makeMove();

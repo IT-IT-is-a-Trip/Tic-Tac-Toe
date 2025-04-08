@@ -1,15 +1,156 @@
-.gameBoard {
-    display: grid;
-    grid-template: 50px 50px 50px / 50px 50px 50px;
-    gap: 0.8px;
-}
-.cell {
+* {
     margin: 0;
     padding: 0;
-    background-color: green;
-    border: 5px solid black;
+    user-select: none;
+    /* Стандартное свойство для большинства браузеров */
+    -webkit-user-select: none;
+    /* Для Safari и старых версий Chrome */
+    -moz-user-select: none;
+    /* Для Firefox */
+    -ms-user-select: none;
+    /* Для IE/Edge */
+}
+
+@font-face {
+    font-family: 'XO';
+    src: url(XO.ttf);
+    font-style: normal;
+    font-weight: normal;
+}
+
+.wrapper {
+    font-family: 'XO';
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+    padding: 0
+}
+
+.gameBoard {
+    display: grid;
+    grid-template: 170px 170px 170px / 170px 170px 170px;
+    gap: 2px;
+    background-color: black;
+    margin: 0;
+    padding: 0;
+    border: 10px solid black;
+    border-radius: 15px;
+}
+
+.cell {
+    font-family: 'XO';
+    margin: 0;
+    padding: 0;
+    font-size: 4.5em;
+    background-color: white;
     display: flex;
     align-items: center;
     justify-content: center;
+    margin: 0;
+    padding: 0;
+}
+
+#index-0 {
+    border-radius: 10px 0 0 0;
+}
+
+#index-2 {
+    border-radius: 0 10px 0 0;
+}
+
+#index-6 {
+    border-radius: 0 0 0 10px;
+}
+
+#index-8 {
+    border-radius: 0 0 10px 0;
+}
+
+.cell:hover {
+    cursor: pointer;
+    background-color: aquamarine;
+}
+
+#player-bar {
+    font-size: 1.5em;
+}
+
+#game-container {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    align-items: center;
+    margin-top: 10vh;
+}
+
+#wins-block {
+    font-size: 1.5em;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    border: 10px solid black;
+    border-radius: 15px;
+}
+
+#wins-block>div {
     text-align: center;
+    padding: 10px;
+}
+
+.wins-count {
+    background-color: aqua;
+    border-radius: 20px;
+}
+
+.reset-board {
+    display: flex;
+    justify-content: center;
+}
+
+.reset-board>button {
+    font-size: 1.3em;
+    border: 3px solid black;
+    border-radius: 14px;
+    font-weight: 700;
+    padding: 3px;
+}
+
+.reset-board>button:hover {
+    cursor: pointer;
+    background-color: aquamarine;
+    font-weight: 900;
+}
+
+#modal-wrapper {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    font-family: 'XO';
+}
+#end-game-message {
+    font-size: 2.3em;
+}
+#restart-game {
+    font-family: 'XO';
+    font-size: 3em;
+    border: 0;
+    border-radius: 20px;
+    padding-left: 20px;
+    padding-right: 20px;
+    background-color: aqua;
+    font-weight: 800;
+    text-align: center;
+}
+
+#end-game-modal {
+    margin: auto;
+    width: 328px;
+    height: 228px;
+    border: 5px solid black;
+    border-radius: 15px;
 }
