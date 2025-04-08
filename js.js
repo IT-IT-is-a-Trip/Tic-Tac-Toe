@@ -24,7 +24,7 @@ const gameController = function (
     const player1field = document.getElementById("player-1-name");
     const player2field = document.getElementById('player-2-name');
     player1field.textContent = `${playerOneName} wins: `;
-    player2field.textContent = `${playerTwoName} wins: `; 
+    player2field.textContent = `${playerTwoName} wins: `;
 
     let board = GameBoard.getBoard();
     let gameEnded = false
@@ -53,13 +53,13 @@ const gameController = function (
             playerO: players[1].wins
         }
         //возвращает число побед первого игрок
-        if (player == 1) {return wins.playerX}
+        if (player == 1) { return wins.playerX }
         //возвращает число побед второго игрока
-        else if (player == 2) {return wins.playerO}
+        else if (player == 2) { return wins.playerO }
         //возвращает объект wins
-        else if (player === 'all') {return wins}
+        else if (player === 'all') { return wins }
         //сообщение об ошибке
-        else {return " Enter 1 or 2 or all as argument "};
+        else { return " Enter 1 or 2 or all as argument " };
     }
 
     //смена игрока:
@@ -126,6 +126,7 @@ const gameController = function (
         GameBoard.resetBoard();
         gameEnded = false;
         board = GameBoard.getBoard();
+
         //две строчки ниже вызывали баг: при победе второго игрока и рестарта игры, его статус не менялся на false.
         //пофиксил поменяв эти строчки местами xD
         activePlayer.winRound = false;
@@ -141,12 +142,12 @@ const gameController = function (
     }
 }
 
-const game = gameController();
 
 
 
 //UI
-const screenController = (function () {
+const screenController = function (firstName, secondName) {
+    const game = gameController(firstName, secondName);
     const cells = document.querySelectorAll('.cell');
     const resetButton = document.getElementById('reset-button')
     //обновляет UI игрового поля:
@@ -154,7 +155,7 @@ const screenController = (function () {
         const board = GameBoard.getBoard();
         for (let i = 0; i < board.length; i++) {
             cells[i].textContent = board[i];
-            getCurrentPlayer(); 
+            getCurrentPlayer();
             showWinner();
         }
     }
@@ -172,7 +173,7 @@ const screenController = (function () {
         updateGameboard();
     }
 
-    
+
     //вывод текущего игрока:
     const getCurrentPlayer = () => {
         let currentPlayerName = game.getActivePlayer().name
@@ -189,11 +190,11 @@ const screenController = (function () {
         const endGameMessage = document.getElementById('end-game-message');
         if (playerWinStatus) {
             if (playerWinStatus === 'Tie') {
-            endGameMessage.textContent = 'It`s tie';
-        } else {endGameMessage.textContent = `${activePlayer} wins!`}
-        modal.showModal();
-        showWinnersSideBar();
-    }
+                endGameMessage.textContent = 'It`s tie';
+            } else { endGameMessage.textContent = `${activePlayer} wins!` }
+            modal.showModal();
+            showWinnersSideBar();
+        }
     }
     //кнопка рестарта игры в диаологовом окне:
     const restartGameButton = document.getElementById('restart-game');
@@ -209,8 +210,51 @@ const screenController = (function () {
         player1.textContent = game.getPlayersWins(1);
         player2.textContent = game.getPlayersWins(2);
     }
-    showWinnersSideBar();
+
     resetButton.addEventListener('click', resetBoard)
     updateGameboard();
+    showWinnersSideBar();
+
     makeMove();
-})();
+};
+
+//логика старта игры и ввода имём игроков:
+const startGameController = (() => {
+    const modalPlayers = document.getElementById('input-names-modal');
+    const startButton = document.getElementById('start-game-button');
+    const startGameButton = (() => {
+        startButton.textContent = "START GAME"
+        const bottomBlock = document.getElementById('bottom-block');
+        bottomBlock.style.visibility = 'hidden';
+        startButton.addEventListener('click', () => {
+            enterPlayersNames();
+        })
+    })();
+    //меняет видимость кнопки старта игры:
+    const switchStartButtonVisibility = () => startButton.style.visibility= startButton.style.visibility === 'hidden' ? 'visible' : 'hidden';
+
+    const enterPlayersNames = () => {
+        let firstPlayerName;
+        let secondPlayerName;
+        modalPlayers.showModal();
+        const firstPlayerInput = document.getElementById('first-player-input-field');
+        const secondPlayerInput = document.getElementById('second-player-input-field');
+        const confirmButton1 = document.getElementById('confirm-first-player-name');
+        const confirmButton2 = document.getElementById('confirm-second-player-name');
+        const startGameWithInputs = document.getElementById('start-game-with-inputs');
+        confirmButton1.addEventListener('click', () => {
+            firstPlayerName = firstPlayerInput.value;
+        })
+        confirmButton2.addEventListener('click', () => {
+            secondPlayerName = secondPlayerInput.value;
+        })
+        startGameWithInputs.addEventListener('click', () => {
+            screenController(firstPlayerName, secondPlayerName);
+            const bottomBlock = document.getElementById('bottom-block');
+            bottomBlock.style.visibility = 'visible';
+            modalPlayers.close();
+            switchStartButtonVisibility();
+        })
+
+    };
+})()
