@@ -40,6 +40,22 @@ const gameController = function (
 
     const getActivePlayer = () => activePlayer; //показывает активного игрока
 
+    //создаёт объект из побед игроков и возвращает различные значения в зависимости от аргумента:
+    const getPlayersWins = (player = 'all') => {
+        const wins = {
+            playerX: players[0].wins,
+            playerO: players[1].wins
+        }
+        //возвращает число побед первого игрок
+        if (player == 1) {return wins.playerX}
+        //возвращает число побед второго игрока
+        else if (player == 2) {return wins.playerO}
+        //возвращает объект wins
+        else if (player === 'all') {return wins}
+        //сообщение об ошибке
+        else {return " Enter 1 or 2 or all as argument "};
+    }
+
     //смена игрока:
     const switchPlayer = () => {
         activePlayer = activePlayer === players[0] ? players[1] : players[0];
@@ -104,11 +120,15 @@ const gameController = function (
         GameBoard.resetBoard();
         gameEnded = false;
         board = GameBoard.getBoard();
-        activePlayer = players[0];
+        //две строчки ниже вызывали баг: при победе второго игрока и рестарта игры, его статус не менялся на false.
+        //пофиксил поменяв эти строчки местами xD
         activePlayer.winRound = false;
+        activePlayer = players[0];
         printRoundDetails();
     }
     return {
+        players,
+        getPlayersWins,
         playRound,
         getActivePlayer,
         resetGame
@@ -160,19 +180,28 @@ const screenController = (function () {
         const playerWinStatus = game.getActivePlayer().winRound;
         const modal = document.getElementById('end-game-modal');
         const endGameMessage = document.getElementById('end-game-message');
-        const restartGameButton = document.getElementById('restart-game');
-        restartGameButton.addEventListener('click', () => {
-            resetBoard();
-            modal.close();
-        });
         if (playerWinStatus) {
             if (playerWinStatus === 'Tie') {
             endGameMessage.textContent = 'It`s tie';
         } else {endGameMessage.textContent = `${activePlayer} wins!`}
         modal.showModal();
+        showWinnersSideBar();
     }
     }
+    //кнопка рестарта игры в диаологовом окне:
+    const restartGameButton = document.getElementById('restart-game');
+    restartGameButton.addEventListener('click', () => {
+        const modal = document.getElementById('end-game-modal');
+        modal.close();
+        resetBoard();
+    });
 
+    const showWinnersSideBar = () => {
+        const player1 = document.getElementById('player-1-wins');
+        const player2 = document.getElementById('player-2-wins');
+        player1.textContent = game.getPlayersWins(1);
+        player2.textContent = game.getPlayersWins(2);
+    }
     resetButton.addEventListener('click', resetBoard)
     updateGameboard();
     makeMove();
